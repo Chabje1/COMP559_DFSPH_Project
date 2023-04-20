@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/raylib-populate"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/3b173fc2eed66a4f4282fd5b6e51e26c/raylib-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/1359e6ef57366e511abf040fd97d0903/raylib-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Jerome/Desktop/DivFree_SPH/build/_deps/raylib-subbuild/CMakeFiles/ef569c785b48dc368fef6333a0253f6e/raylib-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"raylib-populate"
+		],
+		"name" : "raylib-populate"
+	}
+}

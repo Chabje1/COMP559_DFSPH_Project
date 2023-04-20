@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\ef569c785b48dc368fef6333a0253f6e\raylib-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\1359e6ef57366e511abf040fd97d0903\raylib-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\3b173fc2eed66a4f4282fd5b6e51e26c\raylib-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\_deps\raylib-subbuild\CMakeFiles\raylib-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{E05259B3-1BD6-3F7A-996F-0BB74867DC4F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

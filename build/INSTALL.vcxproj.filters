@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Jerome\Desktop\DivFree_SPH\build\CMakeFiles\da7309fa86480e9a2d3f7c71fea7184b\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{204FBD11-8444-3108-BDF2-D2D02F8759D5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
