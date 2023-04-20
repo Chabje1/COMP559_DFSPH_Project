@@ -13,19 +13,26 @@
 template <class T> requires std::is_base_of<Kernel, T>::value class FluidSPH {
 public:
     // Simulation Settings
-	bool useGravity = false;
+    bool useGravity = true;
     raylib::Vector2 gravity = raylib::Vector2(0, 9.81);
     bool drawCells = false;
+    bool colorVelocities = false;
+    bool drawVelocities = false;
+    float velocityScale = 0.1;
+
+    std::string name;
 
     // Fluid Properties
-	double viscousDamping = 0.01;
+	double viscousDamping = 0.05;
     double material_density = 1000;
 
     // Particle Properties
-    double particleRadius = 3;
+    double particleRadius = 0.025;
     double supportRadius = particleRadius * 4;
 	double neighbourhoodDistanceSquared = pow(supportRadius,2);
-    double pMass = 1;
+    double pMass = 4*pow(particleRadius, 2) * material_density;
+
+    float scale = 100;
 
     // Solver Settings
     double omega = 0.5;
@@ -34,6 +41,10 @@ public:
     double maxError_Divergence = 0.1;
 
     // =================
+
+    int numberOfIterations_Density = 0;
+    int numberOfIterations_Divergence = 0;
+
     double dt;
     int next_part_id = 0;
     int numOfNonBoundary = 0;
@@ -47,19 +58,24 @@ public:
 
     SpatialHash* spatialhash;
 
+    // ================
+
+    Particle* selected = NULL;
+
 
     // Constructor
-    FluidSPH(double timestep, raylib::Window* _parent) {
+    FluidSPH(double timestep, raylib::Window* _parent, std::string _name): name(_name) {
         dt = timestep;
         parent = _parent;
-        spatialhash = new SpatialHash(supportRadius, parent->GetWidth(), parent->GetHeight());
+        spatialhash = new SpatialHash(supportRadius, 80*2* supportRadius, 80 * 2 * supportRadius);
 	}
 
 	/**
 	* Resets the fluid to its initial state
 	*/
 	void reset() {
-		for (Particle* p : nonBoundaryParticles) p->reset();
+        for (Particle* p : nonBoundaryParticles) p->reset();
+        for (Particle* p : nonBoundaryParticles) spatialhash->AddParticleToCell(p);
 	}
 
     // ========================================================================
@@ -111,7 +127,8 @@ public:
      xSpacing & ySpacing control the spacing between the particles' centers.
      This means that a spacing of 2 * particleRadius has them touching.
     */
-    void createFluidRectangle(float x1, float y1, float x2, float y2, float xSpacing, float ySpacing) {
+    void createFluidRectangle(float _x1, float _y1, float _x2, float _y2, float _xSpacing, float _ySpacing) {
+        float x1 = _x1 / scale; float y1 = _y1 / scale; float x2 = _x2 / scale; float y2 = _y2 / scale; float xSpacing = _xSpacing / scale; float ySpacing = _ySpacing / scale;
         for (float i = x1; i <= x2; i += xSpacing) {
             for (float j = y1; j <= y2; j += ySpacing) {
                 createParticle(i, j, 0, 0, false);
@@ -122,7 +139,8 @@ public:
     /**
     Creates a completely filled rectangle of fluid which is numX particles wide and numY particles high
     */
-    void createFluidRectangleFilled(float x, float y, int numX, int numY) {
+    void createFluidRectangleFilled(float _x, float _y, int numX, int numY) {
+        float x = _x / scale; float y = _y / scale;
         for (float i = 0; i < numX; i++) {
             for (float j = 0; j < numY; j++) {
                 createParticle(i * 2*particleRadius + x , 2*j * particleRadius + y, 0, 0, false);
@@ -133,7 +151,8 @@ public:
     /**
     Creates a Box of Boundary particles with its top-right corner at (x1,y1) and is numX wide and numY high
     */
-    void createBoundaryBox(float x, float y, int numX, int numY) {
+    void createBoundaryBox(float _x, float _y, int numX, int numY) {
+        float x = _x / scale; float y = _y / scale;
         for (float i = 1; i < numX; i++) {
             createParticle(x + i * 2 * particleRadius, y, 0, 0, true);
             createParticle(x + i * 2 * particleRadius, y + numY * 2 * particleRadius, 0, 0, true);
@@ -153,7 +172,8 @@ public:
     /**
     Creates a Line of Boundary particles with from (x1,y1) to (x2,y2).
     */
-    void createBoundaryLine(float x1, float y1, float x2, float y2) {
+    void createBoundaryLine(float _x1, float _y1, float _x2, float _y2) {
+        float x1 = _x1 / scale; float y1 = _y1 / scale; float x2 = _x2 / scale; float y2 = _y2 / scale;
         raylib::Vector2 p = raylib::Vector2(x1, y1);
         raylib::Vector2 dir = raylib::Vector2(x2, y2) - p;
 
@@ -270,7 +290,7 @@ public:
 
             for (Particle* pj : pi->neighbours) {
                 if (!pj->isBoundary) {
-                    pi->accViscosity -= (pi->v - pj->v) * pj->mass / pj->rho * kernel->evaluate((pj->p - pi->p).Length() / supportRadius);
+                    pi->accViscosity -= (pi->v - pj->v) * pj->mass / pj->rho * kernel->evaluate((pi->p - pj->p).Length() / supportRadius);
                 }
             }
             pi->accViscosity *= viscousDamping / dt;
@@ -278,7 +298,7 @@ public:
 
         // INTEGRATE VELOCITIES WITH NON-PRESSURE FORCES
         for (Particle* pi : nonBoundaryParticles) {
-            pi->v += (pi->accViscosity + (useGravity ? gravity : raylib::Vector2::Zero())) * dt;
+            pi->v += (pi->accViscosity + ((useGravity)?gravity:raylib::Vector2::Zero())) * dt;
         }
 
         // COMPUTE KAPPA TERMS
@@ -299,14 +319,14 @@ public:
 
         double avg_density_error = 10000000;
         double density_error;
-        int iter = 0;
+        numberOfIterations_Density = 0;
 
         for (Particle* pi : nonBoundaryParticles) {
             pi->pressure_DensitySolve = 0;
             pi->pressure_DivergenceSolve = 0;
         }
 
-        while ((avg_density_error > maxError_Density * 0.01 * material_density && max_iter > iter) || iter < 2) {
+        while ((avg_density_error > maxError_Density * 0.01 * material_density && max_iter > numberOfIterations_Density) || numberOfIterations_Density < 2) {
             // Compute Pressure Acceleration
             for (Particle* pi : nonBoundaryParticles) {
                 pi->accPressure = raylib::Vector2::Zero();
@@ -348,7 +368,7 @@ public:
                 density_error -= std::fmin(pi->sourceTerm - pi->Ap_i, 0) * dt;
             }
             avg_density_error = density_error / numOfNonBoundary;
-            iter++;
+            numberOfIterations_Density++;
         }
 
         // INTEGRATE VELOCITIES & POSITIONS WITH PRESSURE FORCE
@@ -378,9 +398,9 @@ public:
 
         // Do the Divergence Solve
         avg_density_error = 10000000;
-        iter = 0;
+        numberOfIterations_Divergence = 0;
 
-        while ((avg_density_error > maxError_Divergence * 0.01 * material_density && max_iter > iter) || iter < 2) {
+        while ((avg_density_error > maxError_Divergence * 0.01 * material_density && max_iter > numberOfIterations_Divergence) || numberOfIterations_Divergence < 2) {
             // Compute Pressure Acceleration
             for (Particle* pi : nonBoundaryParticles) {
                 pi->accPressure = raylib::Vector2::Zero();
@@ -423,7 +443,7 @@ public:
                 density_error -= std::fmin(pi->sourceTerm - pi->Ap_i, 0) * dt;
             }
             avg_density_error = density_error / numOfNonBoundary;
-            iter++;
+            numberOfIterations_Divergence++;
         }
 
         // INTEGRATE VELOCITIES WITH PRESSURE FORCE
@@ -441,20 +461,40 @@ public:
             }
         }
 
+        for (Particle* p : particles) {
+            if (colorVelocities && !p->isBoundary) {
+                double vl = p->v.LengthSqr()/scale;
+                double sig = vl / (1 + std::abs(vl)) * 255;
+                p->color = raylib::Color(sig, sig, 255-sig);
+            }
+            else p->resetColor();
+
+            if (drawVelocities && !p->isBoundary) {
+                (p->p * scale).DrawLine((p->p + p->v * velocityScale)*scale);
+            }
+        }
+
+        if (selected != NULL) {
+            selected->color = RED;
+            for (Particle* p : selected->neighbours) {
+                p->color = GREEN;
+            }
+        }
+
 		for (Particle* p : particles)
 		{
-			(p->p).DrawCircle((p->radius), p->color);
+			(p->p * scale).DrawCircle((p->radius * scale), p->color);
 		}
 	}
 
     void DrawSpatialHashCell(std::pair<int, int> k) {
         Cell* c = spatialhash->GetCell(k);
-        c->Draw();
+        c->Draw(scale);
     }
 
     void DrawSpatialHashCellandNeighbours(int i, int j) {
         Cell* c = spatialhash->GetCell(std::pair<int, int>(i, j));
-        c->Draw();
-        c->DrawNeighbours();
+        c->Draw(scale);
+        c->DrawNeighbours(scale);
     }
 };

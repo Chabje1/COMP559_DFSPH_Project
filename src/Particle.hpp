@@ -49,17 +49,15 @@ public:
      */
     Particle(float x, float y, float vx, float vy, bool _boundary): p0(raylib::Vector2(x,y)), v0(raylib::Vector2(vx, vy)), isBoundary(_boundary) {
         reset();
-        if (isBoundary) {
-            color = LIGHTGRAY;
-        }
-        else
-        {
-            color = BLUE;
-        }
+        resetColor();
     }
 
     Particle(raylib::Vector2 _p, raylib::Vector2 _v, bool _boundary): p0(_p), v0(_v), v(raylib::Vector2::Zero()), isBoundary(_boundary) {
         reset();
+        resetColor();
+    }
+
+    void resetColor() {
         if (isBoundary) {
             color = LIGHTGRAY;
         }

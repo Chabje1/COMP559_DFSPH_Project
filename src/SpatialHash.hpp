@@ -32,13 +32,13 @@ public:
 		particles.erase(p);
 	}
 
-	void Draw() {
-		DrawRectangleV(TR, size, GREEN);
+	void Draw(double scale) {
+		DrawRectangleV(TR* scale, size* scale, GREEN);
 	}
 
-	void DrawNeighbours() {
+	void DrawNeighbours(double scale) {
 		for (Cell* cell : neighbours) {
-			cell->Draw();
+			cell->Draw(scale);
 		}
 	}
 };
@@ -91,16 +91,27 @@ public:
 		return table.at(k);
 	}
 
+	Cell* GetCell(raylib::Vector2 p) {
+		//if (p.x < 0 || p.y < 0 || p.x > width || p.y > height || isnan(p.x - p.y)) return;
+		std::pair<int, int> k = std::pair<int, int>((int)std::floor(p.x / cell_size), (int)std::floor(p.y / cell_size));
+		return table.at(k);
+	}
+
 	Cell* GetCell(Particle* p) {
 		return table.at(p->cellKey);
 	}
 
 	void AddParticleToCell(Particle* p) {
 		if (p->p.x < 0 || p->p.y < 0|| p->p.x > width || p->p.y > height || isnan(p->p.x-p->p.y)) return;
-		if (p->cellKey != std::pair<int, int>(-1, -1)) table.at(p->cellKey)->RemoveParticle(p);
+		RemoveParticle(p);
 		std::pair<int, int> key = std::pair<int, int>((int)std::floor(p->p.x / cell_size), (int)std::floor(p->p.y / cell_size));
 		Cell* cell = table.at(key);
 		cell->particles.insert(p);
 		p->cellKey = key;
+	}
+
+	void RemoveParticle(Particle* p) {
+		if (p->p.x < 0 || p->p.y < 0 || p->p.x > width || p->p.y > height || isnan(p->p.x - p->p.y)) return;
+		if (p->cellKey != std::pair<int, int>(-1, -1)) table.at(p->cellKey)->RemoveParticle(p);
 	}
 };
