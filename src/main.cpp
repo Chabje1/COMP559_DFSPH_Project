@@ -50,6 +50,25 @@ int main()
 
     fluidSims.push_back(&fluid_sim3);
 
+    // Dam break - Stress
+    FluidSPH<CubicSpline> fluid_sim4(0.001, &window, "Dam Break - Stress");
+
+    fluid_sim4.createFluidRectangleFilled(10, 50, 45, 79);
+    fluid_sim4.createBoundaryBox(fluid_sim4.particleRadius * fluid_sim4.scale, fluid_sim4.particleRadius * fluid_sim4.scale, 100, 89);
+
+    fluidSims.push_back(&fluid_sim4);
+
+    // Dam break - Big Stress
+    FluidSPH<CubicSpline> fluid_sim5(0.001, &window, "Dam Break - Big Stress");
+    fluid_sim5.max_iter = 300;
+
+    fluid_sim5.createFluidRectangleFilled(10, 50, 90, 79);
+    fluid_sim5.createBoundaryBox(fluid_sim5.particleRadius * fluid_sim5.scale, fluid_sim5.particleRadius * fluid_sim5.scale, 159, 89);
+
+    fluidSims.push_back(&fluid_sim5);
+
+    //===============
+
     // Initialize the simulations
     for (FluidSPH<CubicSpline>* fsim : fluidSims) fsim->init();
 
@@ -57,6 +76,8 @@ int main()
     currentSim = fluidSims[currentSimInd];
 
     // ================= Menu Stuff ===================
+
+    int computationTime = 0;
 
     raylib::Vector2 helpMenuPosition(3. * screenWidth / 5., 0.);
 
@@ -79,13 +100,14 @@ int main()
         data = new std::vector<std::pair<std::string, int*>>({
                {"Number of Particles :", &sim->numOfNonBoundary},
                {"Number of Iterations - Density :", &sim->numberOfIterations_Density},
-               {"Number of Iterations - Divergence :", &sim->numberOfIterations_Divergence}
+               {"Number of Iterations - Divergence :", &sim->numberOfIterations_Divergence},
+               {"Computation Time per Frame (ms): ", &computationTime}
         });
 
         simDatas.push_back(data);
     }
 
-    raylib::Vector2 controlsPosition(xoffset, dataPosition.y + (dataFontSize + 1)*data->size());
+    raylib::Vector2 controlsPosition(xoffset, dataPosition.y + (dataFontSize + 1) * data->size());
     int controlsFontSize = 14;
 
     std::vector<std::string> controlsText = {
@@ -109,6 +131,7 @@ int main()
 
     bool isPaused = true;
     bool cameraFollowSelected = false;
+    bool step = false;
 
     while (!window.ShouldClose())
     {
@@ -202,6 +225,10 @@ int main()
             currentSim = fluidSims[currentSimInd];
         }
 
+        if (IsKeyPressed(KEY_U)) {
+            step = true;
+        }
+
         BeginDrawing();
             ClearBackground(RAYWHITE);
             BeginMode2D(camera);
@@ -230,8 +257,11 @@ int main()
 
         EndDrawing();
 
-        if (!isPaused) {
+        if (!isPaused || step) {
+            computationTime = (int)std::floor(window.GetTime() * 1000);
             currentSim->Update();
+            computationTime = (int)std::floor(window.GetTime() * 1000) - computationTime;
+            step = false;
         }
     }
 

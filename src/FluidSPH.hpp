@@ -67,7 +67,7 @@ public:
     FluidSPH(double timestep, raylib::Window* _parent, std::string _name): name(_name) {
         dt = timestep;
         parent = _parent;
-        spatialhash = new SpatialHash(supportRadius, 80*2* supportRadius, 80 * 2 * supportRadius);
+        spatialhash = new SpatialHash(supportRadius, 140*2* supportRadius, 140 * 2 * supportRadius);
 	}
 
 	/**
