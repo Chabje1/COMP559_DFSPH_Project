@@ -67,6 +67,15 @@ int main()
 
     fluidSims.push_back(&fluid_sim5);
 
+    // Fluid at "rest" - stress test
+    FluidSPH<CubicSpline> fluid_sim6(0.001, &window, "Fluid at Rest - Stress Test");
+    fluid_sim6.max_iter = 500;
+
+    fluid_sim6.createFluidRectangleFilled(10, 10, 157, 87);
+    fluid_sim6.createBoundaryBox(fluid_sim6.particleRadius * fluid_sim6.scale, fluid_sim6.particleRadius * fluid_sim6.scale, 159, 89);
+
+    fluidSims.push_back(&fluid_sim6);
+
     //===============
 
     // Initialize the simulations
@@ -236,7 +245,7 @@ int main()
             EndMode2D();
             
             // Draw Menu
-            helpMenuPosition.DrawRectangle(helpMenuSize, Fade(SKYBLUE, 0.5f));
+            helpMenuPosition.DrawRectangle(helpMenuSize, Fade(SKYBLUE, 0.75f));
             DrawRectangleLines(helpMenuPosition.x, helpMenuPosition.y, helpMenuSize.x, helpMenuSize.y, BLUE);
             window.DrawFPS(helpMenuPosition.x + fpsPosition.x, helpMenuPosition.y + fpsPosition.y);
 
